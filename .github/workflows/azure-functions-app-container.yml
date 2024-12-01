@@ -48,7 +48,7 @@ jobs:
 
     - name: 'Login to Azure Container Registry'
       run: |
-        az acr login --name your-registry-name
+        az acr login --name pythonappecr
 
     - name: 'Build and Push Docker Image to ACR'
       shell: bash
