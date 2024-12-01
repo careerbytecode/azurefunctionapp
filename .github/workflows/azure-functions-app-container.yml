@@ -29,7 +29,7 @@ permissions:
 env:
   AZURE_FUNCTIONAPP_NAME: pythonapp-azure-function 
   LOGIN_SERVER: pythonappecr.azurecr.io             
-  REGISTRY: pythonappecr
+  REGISTRY: pythonappecr.azurecr.io
   IMAGE: pythonfunc      
   TAG: latest         
 
