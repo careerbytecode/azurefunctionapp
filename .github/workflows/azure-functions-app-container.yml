@@ -1,0 +1,67 @@
+# This workflow will build a container and deploy it to an Azure Functions App on Linux when a commit is pushed to your default branch.
+#
+# This workflow assumes you have already created the target Azure Functions app.
+# For instructions see https://learn.microsoft.com/en-us/azure/azure-functions/functions-create-function-linux-custom-image?tabs=in-process%2Cbash%2Cazure-cli&pivots=programming-language-csharp
+#
+# To configure this workflow:
+# 1. Set up the following secrets in your repository:
+#   - AZURE_RBAC_CREDENTIALS
+#   - REGISTRY_USERNAME
+#   - REGISTRY_PASSWORD
+# 2. Change env variables for your configuration.
+#
+# For more information on:
+#   - GitHub Actions for Azure: https://github.com/Azure/Actions
+#   - Azure Functions Container Action: https://github.com/Azure/functions-container-action
+#   - Azure Service Principal for RBAC: https://github.com/Azure/functions-action#using-azure-service-principal-for-rbac-as-deployment-credential
+#
+# For more samples to get started with GitHub Action workflows to deploy to Azure: https://github.com/Azure/actions-workflow-samples/tree/master/FunctionApp
+
+name: Deploy container to Azure Functions App
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+env:
+  AZURE_FUNCTIONAPP_NAME: pythonapp-azure-function 
+  LOGIN_SERVER: pythonappecr.azurecr.io             
+  REGISTRY: pythonappfunctionapp
+  IMAGE: pythonfunc      
+  TAG: latest         
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@v4
+
+    - name: 'Login via Azure CLI'
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_RBAC_CREDENTIALS }}
+
+    - name: 'Login to Azure Container Registry'
+      run: |
+        az acr login --name your-registry-name
+
+    - name: 'Build and Push Docker Image to ACR'
+      shell: bash
+      run: |
+        docker build . -t ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }}
+        docker push ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }}
+
+    - name: 'Deploy to Azure Function App'
+      uses: Azure/functions-container-action@v1
+      id: fa
+      with:
+        app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+        image: ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }}
+
+    - name: 'Azure Logout'
+      run: az logout
