@@ -27,11 +27,13 @@ permissions:
   contents: read
 
 env:
-  AZURE_FUNCTIONAPP_NAME: pythonapp-azure-function 
-  LOGIN_SERVER: pythonappecr.azurecr.io             
-  REGISTRY: pythonappecr.azurecr.io
-  IMAGE: pythonfunc      
-  TAG: latest         
+  AZURE_FUNCTIONAPP_NAME: pythonapp-azure-function
+  PYTHON_VERSION: 3.11
+  IMAGE_NAME: azure-python-function-app
+  IMAGE_TAG: latest
+  AZURE_REGISTRY_LOGIN_SERVER: pythonappecr.azurecr.io
+  AZURE_REGISTRY_SERVER_NAME: pythonappecr
+  AZURE_REGISTRY_USERNAME: pythonappecr      
 
 jobs:
   build-and-deploy:
