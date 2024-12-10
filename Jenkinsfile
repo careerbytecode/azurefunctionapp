@@ -3,6 +3,10 @@ pipeline {
 
     environment {
         TF_PATH = '/usr/bin/terraform' // Adjust if Terraform is installed elsewhere
+        TF_VAR_subscription_id = credentials('AZURE_SUBSCRIPTION_ID')
+        TF_VAR_tenant_id       = credentials('AZURE_TENANT_ID')
+        TF_VAR_client_id       = credentials('AZURE_CLIENT_ID')
+        TF_VAR_client_secret   = credentials('AZURE_CLIENT_SECRET')
     }
 
     stages {
